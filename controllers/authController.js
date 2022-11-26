@@ -2,18 +2,18 @@ const sequelize = require('../db/sequelize');
 
 function registerInstructor(req,res) {
 
-    var db_handler = require('../db/sequelize');
-    var Instructor = db_handler.models.Instructor;
-    var Person = db_handler.models.Person;
+    let db_handler = require('../db/sequelize');
+    let Instructor = db_handler.models.Instructor;
+    let Person = db_handler.models.Person;
 
     // encrypt password
-    var bcrypt = require('bcrypt');
-    var saltRounds = 10;
-    var salt = bcrypt.genSaltSync(saltRounds);
-    var hash = bcrypt.hashSync(req.body.password, salt);
+    let bcrypt = require('bcrypt');
+    let saltRounds = 10;
+    let salt = bcrypt.genSaltSync(saltRounds);
+    let hash = bcrypt.hashSync(req.body.password, salt);
 
 
-    var person = Person.build({
+    let person = Person.build({
         name: req.body.name,
         surname: req.body.surname,
         mail: req.body.mail,
@@ -22,7 +22,7 @@ function registerInstructor(req,res) {
     });
 
     person.save().then(function (person) {
-        var instructor = Instructor.build({
+        let instructor = Instructor.build({
             person_id: person.id
         });
 
@@ -30,28 +30,28 @@ function registerInstructor(req,res) {
             res.status(200).send({ id: instructor.id, ...person.dataValues, password: undefined });
         }).catch(function (err) {
             console.log(err);
-            res.status(500).send(err);
+            res.status(500).send({message: err.errors[0].message});
         });
     }).catch(function (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({message: err.errors[0].message});
     });
 }
 
 function registerStudent(req,res) {
 
-    var db_handler = require('../db/sequelize');
-    var Student = db_handler.models.Student;
-    var Person = db_handler.models.Person;
+    let db_handler = require('../db/sequelize');
+    let Student = db_handler.models.Student;
+    let Person = db_handler.models.Person;
 
     // encrypt password
-    var bcrypt = require('bcrypt');
-    var saltRounds = 10;
-    var salt = bcrypt.genSaltSync(saltRounds);
-    var hash = bcrypt.hashSync(req.body.password, salt);
+    let bcrypt = require('bcrypt');
+    let saltRounds = 10;
+    let salt = bcrypt.genSaltSync(saltRounds);
+    let hash = bcrypt.hashSync(req.body.password, salt);
 
 
-    var person = Person.build({
+    let person = Person.build({
         name: req.body.name,
         surname: req.body.surname,
         mail: req.body.mail,
@@ -61,32 +61,36 @@ function registerStudent(req,res) {
 
 
     person.save().then(function (person) {
-        var student = Student.build({
-            person_id: person.id
-        }).catch(function (err) {
-            console.log(err);
-            res.status(500).send(err);
+
+        console.log(req.body);
+
+        let student = Student.build({
+            person_id: person.id,
+            student_no:  req.body.student_no
         });
+
+        console.log(student);
+
         student.save().then(function (student) {
             res.status(200).send({ id: student.id, ...person.dataValues, password: undefined });
         }).catch(function (err) {
-            console.log(err);
-            res.status(500).send(err);
+            res.status(500).send({message: err});
         });
     }).catch(function (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({message: err.errors[0].message});
     });
 }
 
 
-function loginInstructor(req,res) {
+function login(req,res) {
 
-    var db_handler = require('../db/sequelize');
-    var jwt = require('jsonwebtoken');
-    var Instructor = db_handler.models.Instructor;
-    var Person = db_handler.models.Person;
-    var bcrypt = require('bcrypt');
+    let db_handler = require('../db/sequelize');
+    let jwt = require('jsonwebtoken');
+    let Instructor = db_handler.models.Instructor;
+    let Student = db_handler.models.Student;
+    let Person = db_handler.models.Person;
+    let bcrypt = require('bcrypt');
 
     Person.findOne({
         where: {
@@ -104,39 +108,51 @@ function loginInstructor(req,res) {
             }).then(function (instructor) {
                 if (instructor) {
                     // create access and refresh token for instructor
-                    var accessToken = jwt.sign({ id: instructor.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-                    var refreshToken = jwt.sign({ id: instructor.id }, process.env.REFRESH_TOKEN_SECRET);
-                    res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken });
-                } else {
-                    res.status(404).send("Instructor not found");
+                    let accessToken = jwt.sign({ id: instructor.id, role: "instructor" }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+                    let refreshToken = jwt.sign({ id: instructor.id, role: "instructor" }, process.env.REFRESH_TOKEN_SECRET);
+                    res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: instructor.id });
                 }
-            }).catch(function (err) {
-                console.log(err);
-                res.status(500).send(err);
-            });
+            })
+
+            Student.findOne({
+                where: {
+                    person_id: person.id
+                }
+            }).then(function (student) {res.status(200).send({...person.dataValues, password: undefined, id: student.id });
+                if (student) {
+                    // create access and refresh token for student
+                    let accessToken = jwt.sign({ id: student.id, role: "instructor" }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+                    let refreshToken = jwt.sign({ id: student.id, role: "instructor" }, process.env.REFRESH_TOKEN_SECRET);
+                    res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: student.id });
+                } else {
+                    res.status(404).send("User not found");
+                }
+            })
         } else {
-            res.status(404).send("Instructor not found");
+            res.status(404).send("User not found");
         }
     }).catch(function (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({message: err.errors[0].message});
     });
 }
 
 
+
+
 function whoami(req,res) {
 
-    var db_handler = require('../db/sequelize');
-    var jwt = require('jsonwebtoken');
-    var Instructor = db_handler.models.Instructor;
-    var Student = db_handler.models.Student;
-    var Person = db_handler.models.Person;
+    let db_handler = require('../db/sequelize');
+    let jwt = require('jsonwebtoken');
+    let Instructor = db_handler.models.Instructor;
+    let Student = db_handler.models.Student;
+    let Person = db_handler.models.Person;
 
     if(!req.headers.authorization) {
         res.status(401).send("Unauthorized");
     }
 
-    var token = req.headers['authorization'].split(' ')[1];
+    let token = req.headers['authorization'].split(' ')[1];
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
         if (err) {
@@ -154,13 +170,13 @@ function whoami(req,res) {
                         }
                     }).then(function (person) {
                         if (person) {
-                            res.status(200).send(person);
+                            res.status(200).send({...person.dataValues, password: undefined, id: instructor.id });
                         } else {
                             res.status(404).send("Person not found");
                         }
                     }).catch(function (err) {
                         console.log(err);
-                        res.status(500).send(err);
+                        res.status(500).send({message: err.errors[0].message});
                     });
                 } else {
                     Student.findOne({
@@ -175,25 +191,25 @@ function whoami(req,res) {
                                 }
                             }).then(function (person) {
                                 if (person) {
-                                    res.status(200).send(person);
+                                    res.status(200).send({...person.dataValues, password: undefined, id: student.id });
                                 } else {
                                     res.status(404).send("Person not found");
                                 }
                             }).catch(function (err) {
                                 console.log(err);
-                                res.status(500).send(err);
+                                res.status(500).send({message: err.errors[0].message});
                             });
                         } else {
                             res.status(404).send("Student not found");
                         }
                     }).catch(function (err) {
                         console.log(err);
-                        res.status(500).send(err);
+                        res.status(500).send({message: err.errors[0].message});
                     });
                 }
             }).catch(function (err) {
                 console.log(err);
-                res.status(500).send(err);
+                res.status(500).send({message: err.errors[0].message});
             });
         }
     });
@@ -203,6 +219,6 @@ function whoami(req,res) {
 module.exports = {
     registerInstructor,
     registerStudent,
-    loginInstructor,
+    login,
     whoami
 };
