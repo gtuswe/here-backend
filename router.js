@@ -2,8 +2,9 @@ const router = require('express').Router();
 const authController = require('./controllers/authController');
 
 // AUTHENTICATION ROUTES
-router.post('/register', authController.registerInstructor);
-router.post('/login', authController.loginInstructor);
+router.post('/instructor', authController.registerInstructor);
+router.post('/student', authController.registerStudent);
+router.post('/login', authController.login);
 router.get('/whoami', authController.whoami);
 
 

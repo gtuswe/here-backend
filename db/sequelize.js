@@ -13,24 +13,55 @@ const Person = sequelize.define('Person', {
     },
     name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Name is required' },
+        }
     },
     surname: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Surname is required' },
+        }
     },
     mail: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Mail is required' },
+            isEmail: { msg: 'Mail is not valid' },
+            isUnique: function (value) {
+                    return Person.findOne({ where: { mail: value } }).then(function (person) {
+                        if (person) {
+                            throw new Error('Mail already exists');
+                        }
+                    });
+                }
+            }
     },
     password: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Password is required' },
+        }
     },
     phone_number: {
         type: Sequelize.STRING,
-        allowNull: false
-    },
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Phone number is required' },
+            is: { args: /^\d+$/, msg: 'Phone number is not valid' },
+            isUnique: function (value) {
+                    return Person.findOne({ where: { phone_number: value } }).then(function (person) {
+                        if (person) {
+                            throw new Error('Phone number already exists');
+                        }
+                    });
+                }
+        }
+    }
 }, {
     timestamps: false,
     tableName: 'person'
@@ -44,7 +75,17 @@ const Instructor = sequelize.define('Instructor', {
     },
     person_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true,
+            isUnique: function (value) {
+                return Instructor.findOne({ where: { person_id: value } }).then(function (instructor) {
+                    if (instructor) {
+                        throw new Error('Person already exists');
+                    }
+                });
+            }
+        }
     },
 }, {
     timestamps: false,
@@ -59,7 +100,31 @@ const Student = sequelize.define('Student', {
     },
     person_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true,
+            isUnique: function (value) {
+                return Student.findOne({ where: { person_id: value } }).then(function (student) {
+                    if (student) {
+                        throw new Error('Person already exists');
+                    }
+                });
+            }
+        }
+    },
+    student_no: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Student number is required' },
+            isUnique: function (value) {
+                return Student.findOne({ where: { student_no: value } }).then(function (student) {
+                    if (student) {
+                        throw new Error('Student number already exists');
+                    }
+                });
+            }
+        }
     },
 }, {
     timestamps: false,
@@ -74,7 +139,10 @@ const Course = sequelize.define('Course', {
     },
     name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true
+        }
     },
     description: {
         type: Sequelize.STRING,
@@ -82,15 +150,33 @@ const Course = sequelize.define('Course', {
     },
     instructor_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true
+        }
     },
     code: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true,
+            isUnique: function (value) {
+                return Course.findOne({ where: { code: value } }).then(function (course) {
+                    if (course) {
+                        throw new Error('Code already exists');
+                    }
+                });
+            }
+        }
     },
     min_attendance_percentage: {
         type: Sequelize.FLOAT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true,
+            min: 0,
+            max: 100
+        }
     },
 }, {
     timestamps: false,
@@ -106,24 +192,45 @@ const Period = sequelize.define('Period', {
     week_day: {
         type: Sequelize.ENUM,
         values: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true,
+            isIn: [['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']]
+        }
     },
     start_time: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true,
+            min: 0,
+            max: 23*60 + 59
+        }
     },
     end_time: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true,
+            min: 0,
+            max: 23*60 + 59
+        }
     },
     course_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true
+        }
     },
     location: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true
+        }
     },
+
 }, {
     timestamps: false,
     tableName: 'period'
@@ -136,16 +243,26 @@ const Announcement = sequelize.define('Announcement', {
         primaryKey: true
     },
     text: { 
-        type: Sequelize.STRING,
-        allowNull: false
+        type: Sequelize.TEXT,
+        allowNull: false,
+        validate: {
+            notNull: true
+        }
     },
     course_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true
+        }
     },
     time: {
         type: Sequelize.TIME,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true,
+            isDate: true
+        }
     }
 }, {
     timestamps: false,
@@ -198,11 +315,28 @@ const Attendance = sequelize.define('Attendance', {
     },
     student_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Student id is required' },
+            isInt: true,
+            min: 0,
+            isStudent: function (value) {
+                return Student.findOne({ where: { id: value } }).then(function (student) {
+                    if (!student) {
+                        throw new Error('Student does not exist');
+                    }
+                });
+            }
+        }
     },
     past_course_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Past Course id is required' },
+            isInt: true,
+            min: 0
+        }
     }
 }, {
     timestamps: false,
@@ -217,11 +351,23 @@ const Past_course = sequelize.define('past_course', {
     },
     course_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Course id cannot be null' },
+            isInt: true,
+            min: 0,
+            isCourse: function (value) {
+                return Course.findOne({ where: { id: value } }).then(function (course) {
+                    if (!course) {
+                        throw new Error('Course does not exist');
+                    }
+                });
+            }
+        }
     },
     period_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
     time: {
         type: Sequelize.TIME,
@@ -240,11 +386,27 @@ const Absence_reason = sequelize.define('Absence_reason', {
     },
     student_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: {  msg: 'Student ID is required' },
+            isInt: true,
+            min: 0,
+            isStudent: function (value) {
+                return Student.findOne({ where: { id: value } }).then(function (student) {
+                    if (!student) {
+                        throw new Error('Student does not exist');
+                    }
+                });
+            }
+        }
     },
     past_course_id: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Past_course id cannot be null' },
+            isInt: true
+        }
     },
     description: {
         type: Sequelize.STRING,
@@ -255,7 +417,12 @@ const Absence_reason = sequelize.define('Absence_reason', {
     confirmed: {
         type: Sequelize.ENUM,
         values: ['t', 'f','w'],
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'w',
+        validate: {
+            notNull: { msg: 'Confirmed cannot be null' },
+            isIn: { args: [['t', 'f','w']], msg: "Must be 't', 'f', or 'w'" }
+        }
     }
 }, {
     timestamps: false,
