@@ -146,7 +146,22 @@ const Course = sequelize.define('Course', {
     },
     description: {
         type: Sequelize.STRING,
-        allowNull: false
+    },
+    start_date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'Start date is required' },
+            isDate: { msg: 'Start date is not valid' }
+        }
+    },
+    end_date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        validate: {
+            notNull: { msg: 'End date is required' },
+            isDate: { msg: 'End date is not valid' }
+        }
     },
     instructor_id: {
         type: Sequelize.INTEGER,

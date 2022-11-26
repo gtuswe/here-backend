@@ -88,6 +88,7 @@ function login(req,res) {
     let db_handler = require('../db/sequelize');
     let jwt = require('jsonwebtoken');
     let Instructor = db_handler.models.Instructor;
+    let Student = db_handler.models.Student;
     let Person = db_handler.models.Person;
     let bcrypt = require('bcrypt');
 
@@ -107,9 +108,9 @@ function login(req,res) {
             }).then(function (instructor) {
                 if (instructor) {
                     // create access and refresh token for instructor
-                    let accessToken = jwt.sign({ id: instructor.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-                    let refreshToken = jwt.sign({ id: instructor.id }, process.env.REFRESH_TOKEN_SECRET);
-                    res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: instructor.id, role: "instructor" });
+                    let accessToken = jwt.sign({ id: instructor.id, role: "instructor" }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+                    let refreshToken = jwt.sign({ id: instructor.id, role: "instructor" }, process.env.REFRESH_TOKEN_SECRET);
+                    res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: instructor.id });
                 }
             })
 
@@ -120,9 +121,9 @@ function login(req,res) {
             }).then(function (student) {res.status(200).send({...person.dataValues, password: undefined, id: student.id });
                 if (student) {
                     // create access and refresh token for student
-                    let accessToken = jwt.sign({ id: student.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-                    let refreshToken = jwt.sign({ id: student.id }, process.env.REFRESH_TOKEN_SECRET);
-                    res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: student.id, role: "student" });
+                    let accessToken = jwt.sign({ id: student.id, role: "instructor" }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+                    let refreshToken = jwt.sign({ id: student.id, role: "instructor" }, process.env.REFRESH_TOKEN_SECRET);
+                    res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: student.id });
                 } else {
                     res.status(404).send("User not found");
                 }
