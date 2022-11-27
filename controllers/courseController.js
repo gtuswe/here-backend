@@ -172,8 +172,18 @@ function getCourse(req, res) {
         } else {
             // get course from db by id
             sequelize.models.Course.findOne({ 
-                id: req.params.id
-            }).then(function (course) {
+                id: req.params.id,
+                include: [
+                    {
+                        model: sequelize.models.Instructor,
+                        include: [
+                            {
+                                model: sequelize.models.Person,
+                                attributes: [{exclude: ['password']}]
+                            }
+                        ]
+                    }
+                ]}).then(function (course) {
                 if (course) {
                     return res.status(200).send(course);
                 } else {
@@ -201,7 +211,13 @@ function getCourses(req, res) {
             return res.status(403).send("Invalid token");
         } else {
             // get courses from db
-            sequelize.models.Course.findAll().then(function (courses) {
+            sequelize.models.Course.findAll({include: [{
+                model: sequelize.models.Instructor,
+                include:[{
+                    model: sequelize.models.Person,
+                    attributes: [{exclude: ['password']}]
+                }]
+            }]}).then(function (courses) {
                 return res.status(200).send(courses);
             }).catch(function (err) {
                 console.log(err);
