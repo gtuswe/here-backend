@@ -171,19 +171,19 @@ function getCourse(req, res) {
             return res.status(403).send("Invalid token");
         } else {
             // get course from db by id
-            sequelize.models.Course.findOne({ 
-                id: req.params.id,
-                include: [
-                    {
-                        model: sequelize.models.Instructor,
-                        include: [
-                            {
-                                model: sequelize.models.Person,
-                                attributes: [{exclude: ['password']}]
-                            }
-                        ]
-                    }
-                ]}).then(function (course) {
+            sequelize.models.Course.findOne({include: [
+                {
+                    model: sequelize.models.Instructor,
+                    include: [{
+                        model: sequelize.models.Person,
+                        attributes: ['name', 'surname', 'mail', 'phone_number'],
+                    }],
+                    attributes: ['id']
+                }],
+                where: {
+                    id: req.params.id
+                }
+            }).then(function (course) {
                 if (course) {
                     return res.status(200).send(course);
                 } else {
