@@ -1,17 +1,17 @@
-# Base image
-FROM node:16
+# Base Image
+FROM alpine
+
+# Installing nodejs
+RUN apk add --update nodejs npm
 
 # Create app directory
-RUN mkdir /here && chown -R node:node /here
+RUN mkdir /here
 
 # Move to working directory
 WORKDIR /here
 
-# Create an user
-USER node
-
 # Make owner of the working directory to the user
-COPY --chown=node:node ./ ./
+COPY  ./ ./
 
 # Install dependencies
 RUN npm install
