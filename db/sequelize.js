@@ -5,10 +5,10 @@ const db_config = require('../config');
 // connect via unix socket
 const sequelize = new Sequelize(db_config.DB_NAME, db_config.DB_USER, db_config.DB_PASSWORD, {
     dialect: 'mysql',
+    host: 'cloudsql',
     dialectOptions: {
         socketPath: db_config.DB_UNIX_SOCKET
     },
-    port: 5432
 });
 
 // Models
