@@ -103,8 +103,10 @@ function login(req,res) {
     let Person = db_handler.models.Person;
     let bcrypt = require('bcrypt');
 
+
     if(!req.body.mail || !req.body.password) {
         res.status(400).send({message: 'Mail and password are required!'});
+        return;
     }
 
     Person.findOne({
@@ -165,6 +167,7 @@ function whoami(req,res) {
 
     if(!req.headers.authorization) {
         res.status(401).send("Unauthorized");
+        return;
     }
 
     let token = req.headers['authorization'].split(' ')[1];
