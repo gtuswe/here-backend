@@ -14,8 +14,7 @@ function registerInstructor(req,res) {
 
 
     if(!req.body.name || !req.body.surname || !req.body.mail || !req.body.password || !req.body.phone_number) {
-        res.status(400).send("Missing parameters");
-        return;
+        return res.status(400).send("Missing parameters");
     }
 
 
@@ -33,14 +32,14 @@ function registerInstructor(req,res) {
         });
 
         instructor.save().then(function (instructor) {
-            res.status(200).send({ id: instructor.id, ...person.dataValues, password: undefined });
+            return res.status(200).send({ id: instructor.id, ...person.dataValues, password: undefined });
         }).catch(function (err) {
             console.log(err);
-            res.status(500).send({message: err.errors[0].message});
+            return res.status(500).send({message: err.errors[0].message});
         });
     }).catch(function (err) {
         console.log(err);
-        res.status(500).send({message: err.errors[0].message});
+        return res.status(500).send({message: err.errors[0].message});
     });
 }
 
@@ -51,8 +50,8 @@ function registerStudent(req,res) {
     let Person = db_handler.models.Person;
 
     if(!req.body.name || !req.body.surname || !req.body.mail || !req.body.password || !req.body.phone_number) {
-        res.status(400).send("Missing parameters");
-        return;
+        return res.status(400).send("Missing parameters");
+        
     }
 
     // encrypt password
@@ -83,13 +82,13 @@ function registerStudent(req,res) {
         console.log(student);
 
         student.save().then(function (student) {
-            res.status(200).send({ id: student.id, ...person.dataValues, password: undefined });
+            return res.status(200).send({ id: student.id, ...person.dataValues, password: undefined });
         }).catch(function (err) {
-            res.status(500).send({message: err});
+            return res.status(500).send({message: err});
         });
     }).catch(function (err) {
         console.log(err);
-        res.status(500).send({message: err.errors[0].message});
+        return res.status(500).send({message: err.errors[0].message});
     });
 }
 
@@ -105,8 +104,7 @@ function login(req,res) {
 
 
     if(!req.body.mail || !req.body.password) {
-        res.status(400).send({message: 'Mail and password are required!'});
-        return;
+        return res.status(400).send({message: 'Mail and password are required!'});
     }
 
     Person.findOne({
@@ -115,7 +113,7 @@ function login(req,res) {
         }
     }).then(function (person) {
         if(!bcrypt.compareSync(req.body.password, person.password)) {
-            res.status(401).send("Unauthorized");
+            return res.status(401).send("Unauthorized");
         } 
         if (person) {
             Instructor.findOne({
@@ -127,7 +125,7 @@ function login(req,res) {
                     // create access and refresh token for instructor
                     let accessToken = jwt.sign({ id: instructor.id, role: "instructor" }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
                     let refreshToken = jwt.sign({ id: instructor.id, role: "instructor" }, process.env.REFRESH_TOKEN_SECRET);
-                    res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: instructor.id });
+                    return res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: instructor.id });
                 }
             })
 
@@ -140,17 +138,17 @@ function login(req,res) {
                     // create access and refresh token for student
                     let accessToken = jwt.sign({ id: student.id, role: "instructor" }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
                     let refreshToken = jwt.sign({ id: student.id, role: "instructor" }, process.env.REFRESH_TOKEN_SECRET);
-                    res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: student.id });
+                    return res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: student.id });
                 } else {
-                    res.status(404).send("User not found");
+                    return res.status(404).send("User not found");
                 }
             })
         } else {
-            res.status(404).send("User not found");
+            return res.status(404).send("User not found");
         }
     }).catch(function (err) {
         console.log(err);
-        res.status(500).send({message: err.errors[0].message});
+        return res.status(500).send({message: err.errors[0].message});
     });
 }
 
@@ -166,15 +164,15 @@ function whoami(req,res) {
     let Person = db_handler.models.Person;
 
     if(!req.headers.authorization) {
-        res.status(401).send("Unauthorized");
-        return;
+        return res.status(401).send("Unauthorized");
+        
     }
 
     let token = req.headers['authorization'].split(' ')[1];
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
         if (err) {
-            res.status(403).send("Invalid token");
+            return res.status(403).send("Invalid token");
         } else {
             Instructor.findOne({
                 where: {
@@ -188,13 +186,13 @@ function whoami(req,res) {
                         }
                     }).then(function (person) {
                         if (person) {
-                            res.status(200).send({...person.dataValues, password: undefined, id: instructor.id });
+                            return res.status(200).send({...person.dataValues, password: undefined, id: instructor.id });
                         } else {
-                            res.status(404).send("Person not found");
+                            return res.status(404).send("Person not found");
                         }
                     }).catch(function (err) {
                         console.log(err);
-                        res.status(500).send({message: err.errors[0].message});
+                        return res.status(500).send({message: err.errors[0].message});
                     });
                 } else {
                     Student.findOne({
@@ -209,25 +207,25 @@ function whoami(req,res) {
                                 }
                             }).then(function (person) {
                                 if (person) {
-                                    res.status(200).send({...person.dataValues, password: undefined, id: student.id });
+                                    return res.status(200).send({...person.dataValues, password: undefined, id: student.id });
                                 } else {
-                                    res.status(404).send("Person not found");
+                                    return res.status(404).send("Person not found");
                                 }
                             }).catch(function (err) {
                                 console.log(err);
-                                res.status(500).send({message: err.errors[0].message});
+                                return res.status(500).send({message: err.errors[0].message});
                             });
                         } else {
-                            res.status(404).send("Student not found");
+                            return res.status(404).send("Student not found");
                         }
                     }).catch(function (err) {
                         console.log(err);
-                        res.status(500).send({message: err.errors[0].message});
+                        return res.status(500).send({message: err.errors[0].message});
                     });
                 }
             }).catch(function (err) {
                 console.log(err);
-                res.status(500).send({message: err.errors[0].message});
+                return res.status(500).send({message: err.errors[0].message});
             });
         }
     });
