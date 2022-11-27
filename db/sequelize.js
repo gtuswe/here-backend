@@ -7,7 +7,8 @@ const sequelize = new Sequelize(db_config.DB_NAME, db_config.DB_USER, db_config.
     dialect: 'mysql',
     dialectOptions: {
         socketPath: db_config.DB_UNIX_SOCKET
-    }
+    },
+    port: 5432
 });
 
 // Models
