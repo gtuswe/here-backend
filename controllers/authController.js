@@ -13,6 +13,12 @@ function registerInstructor(req,res) {
     let hash = bcrypt.hashSync(req.body.password, salt);
 
 
+    if(!req.body.name || !req.body.surname || !req.body.mail || !req.body.password || !req.body.phone_number) {
+        res.status(400).send("Missing parameters");
+        return;
+    }
+
+
     let person = Person.build({
         name: req.body.name,
         surname: req.body.surname,
@@ -43,6 +49,11 @@ function registerStudent(req,res) {
     let db_handler = require('../db/sequelize');
     let Student = db_handler.models.Student;
     let Person = db_handler.models.Person;
+
+    if(!req.body.name || !req.body.surname || !req.body.mail || !req.body.password || !req.body.phone_number) {
+        res.status(400).send("Missing parameters");
+        return;
+    }
 
     // encrypt password
     let bcrypt = require('bcrypt');
@@ -91,6 +102,10 @@ function login(req,res) {
     let Student = db_handler.models.Student;
     let Person = db_handler.models.Person;
     let bcrypt = require('bcrypt');
+
+    if(!req.body.mail || !req.body.password) {
+        res.status(400).send({message: 'Mail and password are required!'});
+    }
 
     Person.findOne({
         where: {
