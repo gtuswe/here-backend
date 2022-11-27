@@ -84,12 +84,12 @@ function updateCourse(req, res) {
 
                     // update course
                     course.update({
-                        name: res.body.name || course.name,
-                        description: res.body.description || course.description,
-                        start_date: res.body.start_date || course.start_date,
-                        end_date: res.body.end_date || course.end_date,
-                        min_attendance_percentage: res.body.min_attendance_percentage || course.min_attendance_percentage,
-                        code: res.body.code || course.code
+                        name: req.body.name || course.name,
+                        description: req.body.description || course.description,
+                        start_date: req.body.start_date || course.start_date,
+                        end_date: req.body.end_date || course.end_date,
+                        min_attendance_percentage: req.body.min_attendance_percentage || course.min_attendance_percentage,
+                        code: req.body.code || course.code
                     }).then(function (course) {
                         return res.status(200).send(course);
                     }).catch(function (err) {
