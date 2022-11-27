@@ -71,16 +71,10 @@ function registerStudent(req,res) {
 
 
     person.save().then(function (person) {
-
-        console.log(req.body);
-
         let student = Student.build({
             person_id: person.id,
             student_no:  req.body.student_no
         });
-
-        console.log(student);
-
         student.save().then(function (student) {
             return res.status(200).send({ id: student.id, ...person.dataValues, password: undefined });
         }).catch(function (err) {
@@ -112,6 +106,10 @@ function login(req,res) {
             mail: req.body.mail,
         }
     }).then(function (person) {
+        if(!person) {
+            return res.status(404).send({message: 'User not found!'});
+        }
+
         if(!bcrypt.compareSync(req.body.password, person.password)) {
             return res.status(401).send("Unauthorized");
         } 

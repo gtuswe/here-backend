@@ -211,7 +211,16 @@ function getCourses(req, res) {
             return res.status(403).send("Invalid token");
         } else {
             // get courses from db
-            sequelize.models.Course.findAll({include: [sequelize.models.Instructor]}).then(function (courses) {
+            sequelize.models.Course.findAll({include: [
+                {
+                    model: sequelize.models.Instructor,
+                    include: [{
+                        model: sequelize.models.Person,
+                        attributes: ['name', 'surname', 'mail', 'phone_number'],
+                    }],
+                    attributes: ['id']
+                }
+            ]}).then(function (courses) {
                 return res.status(200).send(courses);
             }).catch(function (err) {
                 console.log(err);
