@@ -135,7 +135,7 @@ function login(req,res) {
                 where: {
                     person_id: person.id
                 }
-            }).then(function (student) {res.status(200).send({...person.dataValues, password: undefined, id: student.id });
+            }).then(function (student) {
                 if (student) {
                     // create access and refresh token for student
                     let accessToken = jwt.sign({ id: student.id, role: "instructor" }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
