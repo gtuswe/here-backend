@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+  backend:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+
+  db:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    volumes:
+      - ./volume/mysql:/var/lib/mysql:rw
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/here.sql:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: here
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+    ports:
+      - "3306:3306"
+
