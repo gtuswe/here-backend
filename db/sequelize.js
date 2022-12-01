@@ -8,7 +8,7 @@ console.log("socket", db_config.DB_UNIX_SOCKET);
 // connect to google cloud sql instance using unix socket
 const sequelize = new Sequelize(db_config.DB_NAME, db_config.DB_USER, db_config.DB_PASSWORD, {
     dialect: 'mysql',
-    host: db_config.DB_UNIX_SOCKET,
+    host: db_config.DB_HOST,
     dialectOptions: {
         socketPath: db_config.DB_UNIX_SOCKET
     },

@@ -4,3 +4,5 @@ Dockerfile
 .git/
 .gitignore
 .vscode/
+volume
+scripts

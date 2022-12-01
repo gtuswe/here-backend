@@ -21,7 +21,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '4a9a1f0c-6cbd-11ed-a5bb-42010a800003:1-101691';
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '4a9a1f0c-6cbd-11ed-a5bb-42010a800003:1-106294';
 
 --
 -- Table structure for table `absence_reason`
@@ -49,6 +49,15 @@ CREATE TABLE `absence_reason` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `absence_reason`
+--
+
+LOCK TABLES `absence_reason` WRITE;
+/*!40000 ALTER TABLE `absence_reason` DISABLE KEYS */;
+/*!40000 ALTER TABLE `absence_reason` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `admin`
 --
 
@@ -63,6 +72,15 @@ CREATE TABLE `admin` (
   CONSTRAINT `admin_person_null_fk` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admin`
+--
+
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `announcement`
@@ -84,6 +102,15 @@ CREATE TABLE `announcement` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `announcement`
+--
+
+LOCK TABLES `announcement` WRITE;
+/*!40000 ALTER TABLE `announcement` DISABLE KEYS */;
+/*!40000 ALTER TABLE `announcement` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `attendance`
 --
 
@@ -102,6 +129,15 @@ CREATE TABLE `attendance` (
   CONSTRAINT `attendance_student_null_fk` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `attendance`
+--
+
+LOCK TABLES `attendance` WRITE;
+/*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
+/*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `course`
@@ -127,6 +163,16 @@ CREATE TABLE `course` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `course`
+--
+
+LOCK TABLES `course` WRITE;
+/*!40000 ALTER TABLE `course` DISABLE KEYS */;
+INSERT INTO `course` VALUES (2,'Software Engineering','test',5,'CSE343',75,'2022-11-27','2023-02-11');
+/*!40000 ALTER TABLE `course` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `instructor`
 --
 
@@ -142,6 +188,16 @@ CREATE TABLE `instructor` (
   CONSTRAINT `id` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `instructor`
+--
+
+LOCK TABLES `instructor` WRITE;
+/*!40000 ALTER TABLE `instructor` DISABLE KEYS */;
+INSERT INTO `instructor` VALUES (5,23),(6,26);
+/*!40000 ALTER TABLE `instructor` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `instructor_has_course`
@@ -163,6 +219,15 @@ CREATE TABLE `instructor_has_course` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `instructor_has_course`
+--
+
+LOCK TABLES `instructor_has_course` WRITE;
+/*!40000 ALTER TABLE `instructor_has_course` DISABLE KEYS */;
+/*!40000 ALTER TABLE `instructor_has_course` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `past_course`
 --
 
@@ -181,6 +246,15 @@ CREATE TABLE `past_course` (
   CONSTRAINT `past_course_period_null_fk` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `past_course`
+--
+
+LOCK TABLES `past_course` WRITE;
+/*!40000 ALTER TABLE `past_course` DISABLE KEYS */;
+/*!40000 ALTER TABLE `past_course` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `period`
@@ -204,6 +278,15 @@ CREATE TABLE `period` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `period`
+--
+
+LOCK TABLES `period` WRITE;
+/*!40000 ALTER TABLE `period` DISABLE KEYS */;
+/*!40000 ALTER TABLE `period` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `person`
 --
 
@@ -224,6 +307,16 @@ CREATE TABLE `person` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `person`
+--
+
+LOCK TABLES `person` WRITE;
+/*!40000 ALTER TABLE `person` DISABLE KEYS */;
+INSERT INTO `person` VALUES (22,'Ozan','Armagan','$2b$10$ixv2PnBuFuFkpsfpMg63G.JHJzt4zL83yOk8WXpb93G6VipoF6q7i','ozan@gtu.edu.tr','5312559908'),(23,'Ozan','Armaganm','$2b$10$FPxmuKG3g5x1OLYVEvd4DetnkiqddQF8ohpcwaKpdaUR4byP4hpdG','ozannn@gtu.edu.tr','5312559900'),(25,'Serhat','Sarı','$2b$10$g5YdgzONJ8zn/Eqlcp7EuOcvBEuQkAlghj1qi3S0d.6MF7xC78tbK','serhatt@gtu.edu.tr','5312221100'),(26,'Asuman Sare','Ergün','$2b$10$2DZiKEc8Ag3WUdK9iwUS4eiYX6QUIx57guXM9VR9.49y5FwX/4vf2','asuman@gtu.edu.tr','5332221100');
+/*!40000 ALTER TABLE `person` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `student`
 --
 
@@ -240,6 +333,16 @@ CREATE TABLE `student` (
   CONSTRAINT `student_person_null_fk` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `student`
+--
+
+LOCK TABLES `student` WRITE;
+/*!40000 ALTER TABLE `student` DISABLE KEYS */;
+INSERT INTO `student` VALUES (3,25,'1111'),(2,22,'200104004014');
+/*!40000 ALTER TABLE `student` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `student_has_course`
@@ -259,6 +362,15 @@ CREATE TABLE `student_has_course` (
   CONSTRAINT `student_has_class_student_null_fk` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `student_has_course`
+--
+
+LOCK TABLES `student_has_course` WRITE;
+/*!40000 ALTER TABLE `student_has_course` DISABLE KEYS */;
+/*!40000 ALTER TABLE `student_has_course` ENABLE KEYS */;
+UNLOCK TABLES;
 SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -270,4 +382,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-01 12:56:38
+-- Dump completed on 2022-12-01 19:20:54
