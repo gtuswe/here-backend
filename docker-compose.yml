@@ -19,6 +19,4 @@ services:
       MYSQL_DATABASE: here
       MYSQL_USER: dev
       MYSQL_PASSWORD: dev
-    ports:
-      - "3306:3306"
 
