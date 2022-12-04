@@ -21,7 +21,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '4a9a1f0c-6cbd-11ed-a5bb-42010a800003:1-106294';
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '4a9a1f0c-6cbd-11ed-a5bb-42010a800003:1-161801';
 
 --
 -- Table structure for table `absence_reason`
@@ -121,13 +121,12 @@ CREATE TABLE `attendance` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `student_id` int(10) unsigned NOT NULL,
   `past_course_id` int(10) unsigned NOT NULL,
-  `time` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `attendance_student_null_fk` (`student_id`),
   KEY `attendance_past_course_null_fk` (`past_course_id`),
   CONSTRAINT `attendance_past_course_null_fk` FOREIGN KEY (`past_course_id`) REFERENCES `past_course` (`id`),
   CONSTRAINT `attendance_student_null_fk` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,6 +135,7 @@ CREATE TABLE `attendance` (
 
 LOCK TABLES `attendance` WRITE;
 /*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
+INSERT INTO `attendance` VALUES (1,2,1);
 /*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -244,7 +244,7 @@ CREATE TABLE `past_course` (
   KEY `past_course_period_null_fk` (`period_id`),
   CONSTRAINT `past_course_course_null_fk` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
   CONSTRAINT `past_course_period_null_fk` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -253,6 +253,7 @@ CREATE TABLE `past_course` (
 
 LOCK TABLES `past_course` WRITE;
 /*!40000 ALTER TABLE `past_course` DISABLE KEYS */;
+INSERT INTO `past_course` VALUES (1,2,1,'2022-12-04 20:27:17');
 /*!40000 ALTER TABLE `past_course` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -274,7 +275,7 @@ CREATE TABLE `period` (
   UNIQUE KEY `period_pk` (`id`),
   KEY `period_course_null_fk` (`course_id`),
   CONSTRAINT `period_course_null_fk` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -283,6 +284,7 @@ CREATE TABLE `period` (
 
 LOCK TABLES `period` WRITE;
 /*!40000 ALTER TABLE `period` DISABLE KEYS */;
+INSERT INTO `period` VALUES (1,'mon',1,120,2,'Z23');
 /*!40000 ALTER TABLE `period` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -382,4 +384,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-01 19:20:54
+-- Dump completed on 2022-12-05  0:33:37
