@@ -3,17 +3,9 @@ const { Sequelize } = require('sequelize');
 const db_config = require('../config');
 
 
-console.log("socket", db_config.DB_UNIX_SOCKET);
 
-// connect to google cloud sql instance using unix socket
-const sequelize = new Sequelize(db_config.DB_NAME, db_config.DB_USER, db_config.DB_PASSWORD, {
-    dialect: 'mysql',
-    host: db_config.DB_UNIX_SOCKET,
-    dialectOptions: {
-        socketPath: db_config.DB_UNIX_SOCKET
-    },
-});
-
+// connect to DB_HOST
+const sequelize = new Sequelize("mysql://"+db_config.DB_USER+":"+db_config.DB_PASSWORD+"@"+db_config.DB_HOST+"/"+db_config.DB_NAME);
 
 // Models
 const Person = sequelize.define('Person', {

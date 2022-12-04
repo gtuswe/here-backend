@@ -230,13 +230,122 @@ function getCourses(req, res) {
     });
 }
 
+function addStudentToCourse(req, res) {
+    // check access token
+    if (!req.headers.authorization) {
+        return res.status(401).send("Unauthorized");
+        
+    }
+
+    // use student_has_class model to add student to course
+
+    jwt.verify(req.headers['authorization'].split(' ')[1], process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+        if (err) {
+            return res.status(403).send("Invalid token");
+        } else {
+            
+            if(decoded.role !== 'student'){
+                var student_id = decoded.id;
+            }else{
+                var student_id = req.body.student_id;
+            }
+
+            
+            sequelize.models.Student_has_class.create({
+                student_id: student_id,
+                course_id: req.params.id
+            }).then(function (student_has_class) {
+                return res.status(200).send(student_has_class);
+            }).catch(function (err) {
+                console.log(err);
+                return res.status(500).send({message: err.errors[0].message});
+            });
+        }
+    });
+}
+
+
+function removeStudentFromCourse(req, res) {
+    // check access token
+    if (!req.headers.authorization) {
+        return res.status(401).send("Unauthorized");
+    }
+
+    // use student_has_class model to remove student from course
+
+    jwt.verify(req.headers['authorization'].split(' ')[1], process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+        if (err) {
+            return res.status(403).send("Invalid token");
+        } else {
+            
+            if(decoded.role !== 'student'){
+                var student_id = decoded.id;
+            }else{
+                var student_id = req.body.student_id;
+            }
+
+
+            sequelize.models.Student_has_class.destroy({
+                where: {
+                    student_id: student_id,
+                    course_id: req.params.id
+                }
+            }).then(function (student_has_class) {
+                return res.status(200).send(student_has_class);
+            }).catch(function (err) {
+                console.log(err);
+                return res.status(500).send({message: err.errors[0].message});
+            });
+        }
+    });
+}
+
+function getStudentListForClass(req, res) {
+    // check access token
+    if (!req.headers.authorization) {
+        return res.status(401).send("Unauthorized");
+    }
+
+    // use student_has_class model to get student list for course
+    jwt.verify(req.headers['authorization'].split(' ')[1], process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+        if (err) {
+            return res.status(403).send("Invalid token");
+        } else {
+            // get students from db
+            sequelize.models.Student_has_class.findAll({include: [
+                {
+                    model: sequelize.models.Student,
+                    include: [{
+                        model: sequelize.models.Person,
+                        attributes: ['name', 'surname', 'mail', 'phone_number'],
+                    }],
+                    attributes: ['id']
+                }],
+                where: {
+                    course_id: req.params.id
+                }
+            }).then(function (students) {
+                return res.status(200).send(students);
+            }).catch(function (err) {
+                console.log(err);
+                return res.status(500).send({message: err.errors[0].message});
+            });
+        }
+    });
+}
+
+
+
 
 module.exports = {
     getCourses,
     addCourse,
     updateCourse,
     deleteCourse,
-    getCourse  
+    getCourse,
+    addStudentToCourse,
+    removeStudentFromCourse,
+    getStudentListForClass
 }
 
 
