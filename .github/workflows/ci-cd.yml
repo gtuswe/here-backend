@@ -7,9 +7,9 @@ on:
 
 env:
   PROJECT_ID: here-371218
-  GAR_LOCATION: europe-west3
+  GAR_LOCATION: europe-west1
   SERVICE: backend
-  REGION: europe-west3
+  REGION: europe-west1
   
 jobs:
   deploy:
