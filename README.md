@@ -14,8 +14,14 @@ docker compose down
 First, you need to create MySQL container using the following command:  
 
 ```  
-docker container run -p 3306:3306 -v "/$(pwd)/src/volume/mysql:/var/lib/mysql" -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=here -e MYSQL_USER=dev -e MYSQL_PASSWORD=dev --name mysql mysql:5.7
+docker container run -p 3306:3306 -v "/$(pwd)/src/volume/mysql:/var/lib/mysql" -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=here -e MYSQL_USER=dev -e MYSQL_PASSWORD=dev -d --name mysql mysql:5.7
 ```  
+
+* After development, you can delete the container using the following command:   
+```
+docker container rm mysql -f
+```
+
 ### Backend  
 Then, you can start the server using the following command:  
 
