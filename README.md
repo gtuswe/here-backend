@@ -20,7 +20,8 @@ Then, you can start the server using the following command:
 NODE_ENV=development npm start
 ```  
 
-## API
-Any endpoint that is exposed by the server can be accessible at the /doc endpoint. 
-eg: localhost:3000/doc
-
+## Swagger Page
+Any endpoint that is exposed by the server can be accessible at the /doc endpoint.  
+```  
+eg: localhost:3000/doc  
+```  
