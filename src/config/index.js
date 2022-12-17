@@ -1,7 +1,4 @@
-if (process.env.NODE_ENV !== "production") {
-  const dotenv = require("dotenv");
-  dotenv.config();
-}
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
 
 const DB_HOST = process.env.DB_HOST;
 const DB_USER = process.env.DB_USER;
