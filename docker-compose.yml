@@ -15,7 +15,6 @@ services:
     container_name: mysql
     restart: always
     volumes:
-      - ./src/volume/mysql:/var/lib/mysql
       - ./src/scripts/init.sql:/docker-entrypoint-initdb.d/here.sql:ro
     environment:
       MYSQL_ROOT_PASSWORD: root
