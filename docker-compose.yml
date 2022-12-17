@@ -6,6 +6,8 @@ services:
       - db
     ports:
       - "3000:3000"
+    environment:
+      NODE_ENV: development
 
   db:
     image: mysql:5.7

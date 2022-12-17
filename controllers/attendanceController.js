@@ -1,7 +1,7 @@
 const sequelize = require('../db/sequelize');
 const jwt = require('jsonwebtoken');
 
-const _sequelize = require('Sequelize');
+const _sequelize = require('sequelize');
 
 function addAttendance(req, res) {
     
