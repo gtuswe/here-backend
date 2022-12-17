@@ -25,7 +25,7 @@ First, you need to create MySQL container using the following command:
 docker container run -p 3306:3306 -v "/$(pwd)/src/scripts/init.sql:/docker-entrypoint-initdb.d/here.sql:ro" -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=here -e MYSQL_USER=dev -e MYSQL_PASSWORD=dev -d --name mysql mysql:5.7
 ```  
 
-* After development, you can delete the container using the following command:   
+* After finishing development, you can delete the database using the following command:   
 ```
 docker container rm mysql -f
 ```
