@@ -7,9 +7,6 @@ const path = require('path');
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('./swagger_output.json')
 
-const swaggerUi = require('swagger-ui-express')
-const swaggerFile = require('./swagger_output.json')
-
 const app = express(); 
 
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
