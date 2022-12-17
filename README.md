@@ -1,7 +1,13 @@
 ## Running with Docker Compose  
+You can start the server using the following command:    
 ```  
-docker compose up  
+docker compose up --build -d
 ```  
+
+You can delete the containers using the following command:  
+```  
+docker compose down  
+```
 
 ## Local Development
 ### Database   
