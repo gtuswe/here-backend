@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd src && nodemon index"
+    "start": "cd src && node swagger.js && nodemon index"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +20,8 @@
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.20",
     "path": "^0.12.7",
-    "sequelize": "^6.25.8"
+    "sequelize": "^6.25.8",
+    "swagger-autogen": "^2.22.0",
+    "swagger-ui-express": "^4.6.0"
   }
 }
