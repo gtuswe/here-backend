@@ -20,7 +20,7 @@ RUN npm install
 EXPOSE 3000
 
 # Move to the server
-WORKDIR /here
+WORKDIR /here/src
 
 # Start the server
 CMD ["npm","start"]
