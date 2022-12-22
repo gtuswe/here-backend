@@ -1,4 +1,4 @@
-if(process.env.NODE_ENV != 'production' || process.env.NODE_ENV != 'development') {
+if(process.env.NODE_ENV != 'production' && process.env.NODE_ENV != 'development') {
   console.log('NODE_ENV is not set to prod or dev. Setting it to dev');
   process.env.NODE_ENV = 'development';
 }
