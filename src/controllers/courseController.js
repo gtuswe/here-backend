@@ -130,22 +130,11 @@ function deleteCourse(req, res) {
             }
 
             // get course from db by id
-            sequelize.models.Course.findOne({ 
+            sequelize.models.Course.destroy({
                 id: req.params.id
             }).then(function (course) {
                 if (course) {
-                    // check if the instructor is the owner of the course
-                    if (course.instructor_id !== instructor_id) {
-                        return res.status(403).send("Invalid token");
-                    }
-
-                    // delete course
-                    course.destroy().then(function (course) {
-                        return res.status(200).send(course);
-                    }).catch(function (err) {
-                        console.log(err);
-                        return res.status(500).send({message: err.errors[0].message});
-                    });
+                    console.log(course);
                 } else {
                     return res.status(404).send("Course not found");
                 }
@@ -153,7 +142,6 @@ function deleteCourse(req, res) {
                 console.log(err);
                 return res.status(500).send({message: err.errors[0].message});
             });
-        }
     });
 }
 
