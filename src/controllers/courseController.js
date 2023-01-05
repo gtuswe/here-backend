@@ -142,6 +142,7 @@ function deleteCourse(req, res) {
                 console.log(err);
                 return res.status(500).send({message: err.errors[0].message});
             });
+        }
     });
 }
 
