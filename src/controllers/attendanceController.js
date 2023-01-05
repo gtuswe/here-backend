@@ -190,7 +190,7 @@ function getAttendanceForStudent(req, res) {
                 include: [{
                     model: sequelize.models.past_course     ,
                     where: {
-                        course_id: attendance.course_id
+                        course_id: req.body.course_id
                     },
                     attributes: []
                 }],
@@ -199,7 +199,7 @@ function getAttendanceForStudent(req, res) {
                 // get past course count for the course and calculate attendance percentage
                 sequelize.models.past_course.count({
                     where: {
-                        course_id: attendance.course_id
+                        course_id: req.body.course_id
                     }
                 }).then(function (past_course_count) {
                     return res.status(200).send({attendances: attendance, attendance_percentage: attendance.length / past_course_count});
