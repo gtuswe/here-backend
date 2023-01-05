@@ -131,7 +131,9 @@ function deleteCourse(req, res) {
 
             // get course from db by id
             sequelize.models.Course.destroy({
-                id: req.params.id
+                where: {
+                    id: req.params.id
+                }
             }).then(function (course) {
                 if (course) {
                     console.log(course);
