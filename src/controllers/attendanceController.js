@@ -15,23 +15,15 @@ function addAttendance(req, res) {
             if (err) {
                 return res.status(403).send("Invalid token");
             } else {
-                // get instructor id
-                let instructor_id = decoded.id;
-
-
-    
-                // get attendance data
-                let attendance = req.body;
-    
                 // check if attendance data is valid
-                if (!attendance.student_id || !attendance.course_id) {
+                if (!req.body.student_id || !req.body.course_id) {
                     return res.status(400).send("Invalid attendance data");
                 }
 
                 // get past course from date
                 sequelize.models.past_course.findOne({
                     where: {
-                        course_id: attendance.course_id,
+                        course_id: req.body.course_id,
                         // get records in last 2 hours
                         time: {
                             [_sequelize.Op.gte]: new Date(new Date().getTime() - 2 * 60 * 60 * 1000),
@@ -44,8 +36,9 @@ function addAttendance(req, res) {
                     }
 
                     sequelize.models.Attendance.create({
-                        student_id: attendance.student_id,
-                        past_course_id: past_course.id
+                        student_id: req.body.student_id,
+                        past_course_id: past_course.id,
+                        time: new Date()
                     }).then(function (attendance) {
                         return res.status(200).send({message: "Attendance added successfully"});
                     }
@@ -76,11 +69,6 @@ function getAttendanceList(req, res) {
         if (err) {
             return res.status(403).send("Invalid token");
         } else {
-            // get instructor id
-            let instructor_id = decoded.id;
-
-            // get attendance data
-            let attendance = req.body;
 
 
 
@@ -132,8 +120,6 @@ function deleteAttendance(req, res) {
             if (err) {
                 return res.status(403).send("Invalid token");
             } else {
-                // get instructor id
-                let instructor_id = decoded.id;
     
                 // check the role 
                 if (decoded.role !== 'instructor') {
@@ -171,14 +157,9 @@ function getAttendanceForStudent(req, res) {
         if (err) {
             return res.status(403).send("Invalid token");
         } else {
-            // get student id
-            let student_id = decoded.id;
-
-            // get attendance data
-            let attendance = req.body;
 
             // check if attendance data is valid
-            if (!attendance.course_id) {
+            if (!req.query.course_id) {
                 return res.status(400).send("Invalid attendance data");
             }
 

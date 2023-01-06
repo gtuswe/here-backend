@@ -32,10 +32,8 @@ router.delete('/period/:id', periodController.deletePeriod);
 router.post('/pastcourse', pastCourseController.createPastCourse);
 router.get('/pastcourse', pastCourseController.getPastCourses);
 router.delete('/pastcourse/:id', pastCourseController.deletePastCourse);
-router.get('/attendance', attendanceController.getAllAttendances);
 router.post('/attendance', attendanceController.addAttendance);
 router.delete('/attendance/:id', attendanceController.deleteAttendance);
-router.get('/student/:id/attendance', attendanceController.getAttendanceForStudent);
 
 
 
