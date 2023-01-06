@@ -15,9 +15,6 @@ function addCourse(req, res) {
         } else {
             // get instructor id
             let instructor_id = decoded.id;
-
-            console.log(decoded);
-
             // check the role 
             if (decoded.role !== 'instructor') {
                 return res.status(403).send("You are not instructor");
@@ -228,25 +225,19 @@ function addStudentToCourse(req, res) {
         
     }
 
-    // use student_has_class model to add student to course
+    // use student_has_course model to add student to course
 
     jwt.verify(req.headers['authorization'].split(' ')[1], process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
         if (err) {
             return res.status(403).send("Invalid token");
         } else {
             
-            if(decoded.role !== 'student'){
-                var student_id = decoded.id;
-            }else{
-                var student_id = req.body.student_id;
-            }
-
-            
-            sequelize.models.Student_has_class.create({
+            let student_id = req.body.student_id;
+            sequelize.models.student_has_course.create({
                 student_id: student_id,
                 course_id: req.params.id
-            }).then(function (student_has_class) {
-                return res.status(200).send(student_has_class);
+            }).then(function (student_has_course) {
+                return res.status(200).send(student_has_course);
             }).catch(function (err) {
                 console.log(err);
                 return res.status(500).send({message: err.errors[0].message});
@@ -262,27 +253,21 @@ function removeStudentFromCourse(req, res) {
         return res.status(401).send("Unauthorized");
     }
 
-    // use student_has_class model to remove student from course
+    // use student_has_course model to remove student from course
 
     jwt.verify(req.headers['authorization'].split(' ')[1], process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
         if (err) {
             return res.status(403).send("Invalid token");
         } else {
             
-            if(decoded.role !== 'student'){
-                var student_id = decoded.id;
-            }else{
-                var student_id = req.body.student_id;
-            }
-
-
-            sequelize.models.Student_has_class.destroy({
+            let student_id = req.body.student_id;
+            sequelize.models.student_has_course.destroy({
                 where: {
                     student_id: student_id,
                     course_id: req.params.id
                 }
-            }).then(function (student_has_class) {
-                return res.status(200).send(student_has_class);
+            }).then(function (student_has_course) {
+                return res.status(200).send(student_has_course);
             }).catch(function (err) {
                 console.log(err);
                 return res.status(500).send({message: err.errors[0].message});
@@ -297,13 +282,13 @@ function getStudentListForClass(req, res) {
         return res.status(401).send("Unauthorized");
     }
 
-    // use student_has_class model to get student list for course
+    // use student_has_course model to get student list for course
     jwt.verify(req.headers['authorization'].split(' ')[1], process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
         if (err) {
             return res.status(403).send("Invalid token");
         } else {
             // get students from db
-            sequelize.models.Student_has_class.findAll({include: [
+            sequelize.models.student_has_course.findAll({include: [
                 {
                     model: sequelize.models.Student,
                     include: [{

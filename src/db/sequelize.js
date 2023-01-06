@@ -291,7 +291,7 @@ const Announcement = sequelize.define('Announcement', {
     tableName: 'announcement'
 });
 
-const Student_has_class = sequelize.define('Student_has_class', {
+const student_has_course = sequelize.define('student_has_course', {
     id : {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -307,7 +307,7 @@ const Student_has_class = sequelize.define('Student_has_class', {
     }
 }, {
     timestamps: false,
-    tableName: 'student_has_class'
+    tableName: 'student_has_course'
 });
 
 const Instructor_has_class = sequelize.define('Instructor_has_class', {
@@ -358,6 +358,14 @@ const Attendance = sequelize.define('Attendance', {
             notNull: { msg: 'Past Course id is required' },
             isInt: true,
             min: 0
+        }
+    },
+    time: {
+        type: Sequelize.TIME,
+        allowNull: false,
+        validate: {
+            notNull: true,
+            isDate: true
         }
     }
 }, {
@@ -459,8 +467,8 @@ Instructor.belongsTo(Person, {foreignKey: 'person_id'});
 Course.belongsTo(Instructor, {foreignKey: 'instructor_id'});
 Period.belongsTo(Course, {foreignKey: 'course_id'});
 Announcement.belongsTo(Course, {foreignKey: 'course_id'});
-Student_has_class.belongsTo(Student, {foreignKey: 'student_id'});
-Student_has_class.belongsTo(Course, {foreignKey: 'course_id'});
+student_has_course.belongsTo(Student, {foreignKey: 'student_id'});
+student_has_course.belongsTo(Course, {foreignKey: 'course_id'});
 Instructor_has_class.belongsTo(Instructor, {foreignKey: 'instructor_id'});
 Instructor_has_class.belongsTo(Course, {foreignKey: 'course_id'});
 Attendance.belongsTo(Student, {foreignKey: 'student_id'});
@@ -478,8 +486,8 @@ Person.hasMany(Instructor, {foreignKey: 'person_id'});
 Instructor.hasMany(Course, {foreignKey: 'instructor_id'});
 Course.hasMany(Period, {foreignKey: 'course_id'});
 Course.hasMany(Announcement, {foreignKey: 'course_id'});
-Student.hasMany(Student_has_class, {foreignKey: 'student_id'});
-Course.hasMany(Student_has_class, {foreignKey: 'course_id'});
+Student.hasMany(student_has_course, {foreignKey: 'student_id'});
+Course.hasMany(student_has_course, {foreignKey: 'course_id'});
 Instructor.hasMany(Instructor_has_class, {foreignKey: 'instructor_id'});
 Course.hasMany(Instructor_has_class, {foreignKey: 'course_id'});
 Student.hasMany(Attendance, {foreignKey: 'student_id'});

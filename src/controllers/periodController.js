@@ -154,21 +154,16 @@ function getPeriods(req, res) {
         if (err) {
             return res.status(403).send("Invalid token");
         } else {
-            // get instructor id
-            let instructor_id = decoded.id;
-
-            // get period data
-            let period = req.body;
 
             // check if period data is valid
-            if (!period.course_id) {
+            if (!req.query.course_id) {
                 return res.status(400).send("Invalid period data");
             }
 
             // get periods
             sequelize.models.Period.findAll({
                 where: {
-                    course_id: period.course_id
+                    course_id: req.query.course_id
                 }
             }).then(function (periods) {
                 return res.status(200).send(periods);

@@ -75,7 +75,7 @@ function deletePastCourse(req, res) {
             }
 
             // delete past course
-            sequelize.models.PastCourse.destroy({
+            sequelize.models.past_course.destroy({
                 where: {
                     id: pastCourseId
                 }
@@ -101,16 +101,9 @@ function getPastCourses(req, res) {
             if (err) {
                 return res.status(403).send("Invalid token");
             } else {
-                // get instructor id
-                let instructor_id = decoded.id;
-    
-                // check the role 
-                if (decoded.role !== 'instructor') {
-                    return res.status(403).send("You are not instructor");
-                }
     
                 // get past course id
-                let pastCourseId = req.params.id;
+                let pastCourseId = req.query.course_id
     
                 // check if past course id is valid
                 if (!pastCourseId) {
@@ -118,9 +111,9 @@ function getPastCourses(req, res) {
                 }
     
                 // get past course
-                sequelize.models.PastCourse.findAll({
+                sequelize.models.past_course.findAll({
                     where: {
-                        id: pastCourseId
+                        course_id: pastCourseId
                     }
                 }).then(function (pastCourse) {
                     return res.status(200).send(pastCourse);
