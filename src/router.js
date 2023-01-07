@@ -10,6 +10,8 @@ const attendanceController = require('./controllers/attendanceController');
 router.post('/instructor', authController.registerInstructor);
 router.post('/student', authController.registerStudent);
 router.post('/student/:id/attendance',attendanceController.getAttendanceForStudent);
+router.put('/student/:id', authController.updateStudent);
+router.put('/instructor/:id', authController.updateInstructor);
 router.post('/login', authController.login);
 router.get('/whoami', authController.whoami);
 router.get('/course', courseController.getCourses);

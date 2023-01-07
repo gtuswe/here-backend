@@ -13,7 +13,7 @@ function registerInstructor(req,res) {
     let hash = bcrypt.hashSync(req.body.password, salt);
 
 
-    if(!req.body.name || !req.body.surname || !req.body.mail || !req.body.password || !req.body.phone_number) {
+    if(!req.body.name || !req.body.surname || !req.body.mail || !req.body.password) {
         return res.status(400).send("Missing parameters");
     }
 
@@ -23,7 +23,6 @@ function registerInstructor(req,res) {
         surname: req.body.surname,
         mail: req.body.mail,
         password: hash,
-        phone_number: req.body.phone_number
     });
 
     person.save().then(function (person) {
@@ -49,7 +48,7 @@ function registerStudent(req,res) {
     let Student = db_handler.models.Student;
     let Person = db_handler.models.Person;
 
-    if(!req.body.name || !req.body.surname || !req.body.mail || !req.body.password || !req.body.phone_number) {
+    if(!req.body.name || !req.body.surname || !req.body.mail || !req.body.password) {
         return res.status(400).send("Missing parameters");
         
     }
@@ -66,7 +65,6 @@ function registerStudent(req,res) {
         surname: req.body.surname,
         mail: req.body.mail,
         password: hash,
-        phone_number: req.body.phone_number
     });
 
 
@@ -123,7 +121,7 @@ function login(req,res) {
                     // create access and refresh token for instructor
                     let accessToken = jwt.sign({ id: instructor.id, role: "instructor" }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
                     let refreshToken = jwt.sign({ id: instructor.id, role: "instructor" }, process.env.REFRESH_TOKEN_SECRET);
-                    return res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: instructor.id });
+                    return res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: instructor.id, role: "instructor" });
                 }
             })
 
@@ -136,7 +134,7 @@ function login(req,res) {
                     // create access and refresh token for student
                     let accessToken = jwt.sign({ id: student.id, role: "instructor" }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
                     let refreshToken = jwt.sign({ id: student.id, role: "instructor" }, process.env.REFRESH_TOKEN_SECRET);
-                    return res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: student.id });
+                    return res.status(200).send({ accessToken: accessToken, refreshToken: refreshToken, ...person.dataValues, password: undefined, id: student.id, role: "student" });
                 } else {
                     return res.status(404).send("User not found");
                 }
@@ -149,6 +147,93 @@ function login(req,res) {
         return res.status(500).send({message: err.errors[0].message});
     });
 }
+
+function updateStudent(req,res) {
+
+    let db_handler = require('../db/sequelize');
+    let Student = db_handler.models.Student;
+    let Person = db_handler.models.Person;
+
+    Student.findOne({
+        where: {
+            id: req.params.id
+        }
+    }).then(function (student) {
+        if(!student) {
+            return res.status(404).send("Student not found");
+        }
+        Person.findOne({
+            where: {
+                id: student.person_id
+            }
+        }).then(function (person) {
+            if(!person) {
+                return res.status(404).send("Person not found");
+            }
+            person.update({
+                name: req.body.name || person.name,
+                surname: req.body.surname || person.surname,
+                mail: req.body.mail || person.mail,
+            }).then(function (person) {
+                student.update({
+                    student_no: req.body.student_no || student.student_no,
+                }).then(function (student) {
+                    return res.status(200).send({ ...person.dataValues, password: undefined, id: student.id, role: "student"
+                    });
+                }).catch(function (err) {
+                    return res.status(500).send({message: err});
+                });
+            }).catch(function (err) {
+                return res.status(500).send({message: err});
+            });
+        }).catch(function (err) {
+            return res.status(500).send({message: err});
+        });
+    }).catch(function (err) {
+        return res.status(500).send({message: err});
+    });
+}
+
+function updateInstructor(req,res) {
+
+    let db_handler = require('../db/sequelize');
+    let Instructor = db_handler.models.Instructor;
+    let Person = db_handler.models.Person;
+
+    Instructor.findOne({
+        where: {
+            id: req.params.id
+        }
+    }).then(function (instructor) {
+        if(!instructor) {
+            return res.status(404).send("Instructor not found");
+        }
+        Person.findOne({
+            where: {
+                id: instructor.person_id
+            }
+        }).then(function (person) {
+            if(!person) {
+                return res.status(404).send("Person not found");
+            }
+            person.update({
+                name: req.body.name || person.name,
+                surname: req.body.surname || person.surname,
+                mail: req.body.mail || person.mail,
+            }).then(function (person) {
+                return res.status(200).send({ ...person.dataValues, password: undefined, id: instructor.id, role: "instructor"});
+            })
+            .catch(function (err) {
+                return res.status(500).send({message: err});
+            });
+        }).catch(function (err) {
+            return res.status(500).send({message: err});
+        });
+    }).catch(function (err) {
+        return res.status(500).send({message: err});
+    });
+}
+
 
 
 
@@ -233,6 +318,8 @@ function whoami(req,res) {
 module.exports = {
     registerInstructor,
     registerStudent,
+    updateInstructor,
+    updateStudent,
     login,
     whoami
 };

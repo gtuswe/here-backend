@@ -53,21 +53,6 @@ const Person = sequelize.define('Person', {
         validate: {
             notNull: { msg: 'Password is required' },
         }
-    },
-    phone_number: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notNull: { msg: 'Phone number is required' },
-            is: { args: /^\d+$/, msg: 'Phone number is not valid' },
-            isUnique: function (value) {
-                    return Person.findOne({ where: { phone_number: value } }).then(function (person) {
-                        if (person) {
-                            throw new Error('Phone number already exists');
-                        }
-                    });
-                }
-        }
     }
 }, {
     timestamps: false,
