@@ -269,7 +269,7 @@ function whoami(req,res) {
                         }
                     }).then(function (person) {
                         if (person) {
-                            return res.status(200).send({...person.dataValues, password: undefined, id: instructor.id });
+                            return res.status(200).send({...person.dataValues, password: undefined, id: instructor.id, role: "instructor" });
                         } else {
                             return res.status(404).send("Person not found");
                         }
@@ -290,7 +290,7 @@ function whoami(req,res) {
                                 }
                             }).then(function (person) {
                                 if (person) {
-                                    return res.status(200).send({...person.dataValues, password: undefined, id: student.id });
+                                    return res.status(200).send({...person.dataValues, password: undefined, id: student.id, student_no: student.student_no, role: "student" });
                                 } else {
                                     return res.status(404).send("Person not found");
                                 }
