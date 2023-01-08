@@ -204,7 +204,7 @@ function getCourses(req, res) {
                     model: sequelize.models.Instructor,
                     include: [{
                         model: sequelize.models.Person,
-                        attributes: ['name', 'surname', 'mail', 'phone_number'],
+                        attributes: ['name', 'surname', 'mail'],
                     }],
                     attributes: ['id']
                 }
