@@ -11,6 +11,7 @@ const app = express();
 
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 app.use(cors());
+app.options('*', cors()) // include before other routes
 
 app.use(cookieParser());
 // support parsing of application/json type post data
@@ -28,6 +29,7 @@ app.get('/api/hello', (req, res) => {
     res.send({ express: 'Hello From Express' });
     }
 );
+
 
 
 // Use router
