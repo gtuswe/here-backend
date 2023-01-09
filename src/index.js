@@ -11,9 +11,7 @@ const app = express();
 
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
-app.use(cors({
-    origin: 'https://hereattendance.tech'
-}));
+app.use(cors());
 
 app.use(cookieParser());
 // support parsing of application/json type post data
