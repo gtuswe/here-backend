@@ -164,7 +164,7 @@ function getCourse(req, res) {
                     model: sequelize.models.Instructor,
                     include: [{
                         model: sequelize.models.Person,
-                        attributes: ['name', 'surname', 'mail', 'phone_number'],
+                        attributes: ['name', 'surname', 'mail'],
                     }],
                     attributes: ['id']
                 }],
@@ -204,7 +204,7 @@ function getCourses(req, res) {
                     model: sequelize.models.Instructor,
                     include: [{
                         model: sequelize.models.Person,
-                        attributes: ['name', 'surname', 'mail', 'phone_number'],
+                        attributes: ['name', 'surname', 'mail'],
                     }],
                     attributes: ['id']
                 }
@@ -293,7 +293,7 @@ function getStudentListForClass(req, res) {
                     model: sequelize.models.Student,
                     include: [{
                         model: sequelize.models.Person,
-                        attributes: ['name', 'surname', 'mail', 'phone_number'],
+                        attributes: ['name', 'surname', 'mail'],
                     }],
                     attributes: ['id']
                 }],
@@ -323,10 +323,3 @@ module.exports = {
     removeStudentFromCourse,
     getStudentListForClass
 }
-
-
-                
-
-
-
-
